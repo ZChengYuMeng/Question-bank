@@ -1,0 +1,99 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>错题本</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+	<link rel="stylesheet" href="ST/layui/css/layui.css"  media="all">
+	<script src="ST/layui/layui.js" charset="utf-8"></script>
+	<script type="text/javascript" src="./ST/yanglu/js/jquery-1.4.2.min.js"></script>
+<script>
+layui.use(['element', 'layer'], function(){
+  var element = layui.element;
+  var layer = layui.layer;
+  
+  //监听折叠
+  element.on('collapse(test)', function(data){
+	//这里是课程展开时间监听
+	element.progress('test', '50%');
+  });
+});
+</script>
+<script type="text/javascript">
+	$(function(){
+	layui.use(['layer', 'form'], function(){
+			var layer = layui.layer
+  			,form = layui.form;
+	$.ajaxSetup({async:false});
+	var $CT=[];
+	var $Count=[];
+	var $stageId="";
+	$.post("<%=request.getContextPath()%>/Index_cuoTi?guest.guestId="+<%=session.getAttribute("uid")%>,success,"json");
+	function success(data){
+		var obj = eval(data);
+		$.each(obj.listThree,function(i,o){
+			$CT[$CT.length]=o[0];
+			$Count[$Count.length]=o[1];
+			$stageId=o[2];
+			//alert(o[1])
+			});
+			
+		}
+		
+		if($CT[0]==null){
+		layer.msg("暂无！！");
+		}else{
+		for (var j = 0; j < $CT.length; j++) {
+		if($Count[j]==0){
+		layer.msg("暂无！！");
+		}else{
+				$("body").append('<div class="layui-collapse" lay-accordion="">'+
+ ' <div class="layui-colla-item">'+
+   ' <h2 class="layui-colla-title"><span>'+$CT[j]+'</span>(共错了<span>'+$Count[j]+'</span>题)</h2>'+
+   ' <div class="layui-colla-content layui-show">'+
+  	 '<input type="hidden" value="'+$stageId+'">'+
+    ' <a  href="javascript:;" id="layui-btn-zl" class="layui-btn" style="background:red;margin-left: 30px" data-title="编辑一" data-url="edit1.html" data-icon="fa-edit" data-id="1"><i class="fa fa-edit" aria-hidden="true"></i> 专练错题</a>'+
+    '<a  href="javascript:;" id="layui-btn-ck" class="layui-btn" style="margin-left: 30px" data-title="编辑二" data-url="edit2.html" data-icon="fa-edit" data-id="2"><i class="fa fa-edit" aria-hidden="true"></i> 查看错题</a>'+
+    '</div>'+
+  '</div>'+
+'</div>');
+}
+		}
+}
+	})
+	$("#layui-btn-zl").live("click",function(){
+		var $sId = $(this).prev().val();
+		var $cname= $(this).parent().prev().children(":eq(0)").html();
+		var $Counts= $(this).parent().prev().children(":eq(1)").html();
+		parent.window.document.location.href="Subject_Thewrongquestion?course.courseName="+$cname+"&course.stageId="+$sId+"&guest.guestId="+<%=session.getAttribute("uid")%>+"&ErrorCount="+$Counts;
+		
+	});
+	$("#layui-btn-ck").live("click",function(){
+		var $sId = $(this).prev().prev().val();
+		var $cname= $(this).parent().prev().children(":eq(0)").html();
+		//var $Counts= $(this).parent().prev().children(":eq(1)").html();
+		parent.window.document.location.href="Thewrongquestion.jsp?cname="+$cname+"&sid="+$sId+"&gid="+<%=session.getAttribute("uid")%>;
+	});
+})
+</script>
+  </head>
+  
+  <body style="size: 90%;">
+   
+  </body>
+</html>

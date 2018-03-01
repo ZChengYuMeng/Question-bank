@@ -1,0 +1,5 @@
+/*上传题目界面外部样式*/
+.left{width:50%;margin-left:30px;}
+
+.right{width: 30%;float: right;position: absolute;top: 40px;right: 50px;}
+.Prompt{color: orangered;font-size: 1.5em;}

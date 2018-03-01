@@ -1,0 +1,9 @@
+package www.cloudquestionbank.com.services;
+/**
+ * Services【用户以完成课程业务接口】
+ * @author ( 人 )
+ *
+ */
+public interface SIcompleteCurriculum {
+
+}

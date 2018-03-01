@@ -1,0 +1,476 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<c:if test="${adminid!=null && adminTypeID<5}">
+<!DOCTYPE HTML >
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<meta charset="UTF-8">
+		<title>创建新的考试</title>
+		<link rel="stylesheet" href="ST/layui/css/layui.css" media="all" />
+		<script src="ST/layui/layui.js"></script>
+		<script src="ST/yanglu/js/jquery-1.4.2.min.js"></script>
+		<script src="ST/zf/js/Currency.js"></script>
+		<style>
+			.Body{max-width: 70%;margin: auto;}
+			.Notice{border: 1px solid orangered;}
+		</style>
+		
+		<script>
+			$(function(){
+				$.ajaxSetup({async:false});
+				var $schoolID=<%=session.getAttribute("schoolID")%>;//存储校区编号
+				var $classID="";										//存储班级编号
+				LoadPage();//加载页面
+				//------[加载校区班级]
+				function loadSchool($data){
+					$.post("<%=request.getContextPath()%>/School_GetList",$data,success,"json");
+					function success(result){
+						//console.log(result);
+						var $html="";
+						$.each(result.School,function(i,o){
+							//console.log(o[i]);
+							$html+="<option value="+o[0]+" >"+o[1]+"</option>";
+						})
+						$("#schoolID").html($html);$html="";//清空数据
+						$.each(result.Class,function(i,o){
+							//console.log(o[i]);
+							$classID+=$classID!=""?","+o[0]:o[0];
+							$html+="<input type='checkbox'  id='classID' class='classID' name='classID' value='"+o[0]+"' title='"+o[1]+"'/>";
+						})
+						$("#ClassArr").html($html);
+						render();
+					}
+				}
+				//------[加载校区班级]
+				//------[加载页面]
+				function LoadPage(){
+					loadSchool("&school.id="+$schoolID);
+					loadStage("&stage.id=0");
+				}
+				//------[END][加载页面]
+				
+				
+			    
+			    //-----[渲染]
+				function render(){
+					layui.use(['form', 'layedit', 'laydate','util', 'layer','jquery'], function(){
+						layui.form.render('checkbox');
+						layui.form.render('select');
+					})
+				}
+				//-----[END][渲染]
+				
+				//------[加载阶段]
+				function loadStage($data){
+					$.post("<%=request.getContextPath()%>/Stage_GetStage",$data,success,"json");
+					function success(result){
+						//console.log(result);
+						var $html="";
+						$.each(result.stage,function(i,o){
+							//console.log(o[i]);
+							$html+="<option value="+o[0]+" >"+o[1]+"</option>";
+						})
+						$("#stageID").html($html);$html="";
+						$.each(result.course,function(i,o){
+							//console.log(o[i]);
+							$html+="<input type='checkbox' id='courseID' class='courseID' name='courseID' value='"+o[0]+"' title='"+o[1]+"'/>";
+						})
+						$("#courseArr").html($html);
+					}
+					render();
+				}
+				//------[END][加载阶段]	
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+				//隐藏 提示
+				$(".classIDPrompt").hide();
+				$(".schoolIDPrompt").hide();
+				$(".stageIDPrompt").hide();
+				$(".courseIDPrompt").hide();
+				$(".countPrompt").hide();
+				$(".namePrompt").hide();
+				$(".fractionPrompt").hide();
+				$(".startTimePrompt").hide();
+				$(".endTImePrompt").hide();
+				//试卷名称失焦事件
+				$("#name").blur(function(){
+					VerificationsTextBox($("#name"),"您还没给试卷一个名字呢！");
+				})
+				
+				
+				
+				
+					//监听提交事件
+					$("#sub").click(function(){
+						//console.log($("#startTime").val()+" / "+$("#endTIme").val().trim());
+						//console.log(GetDateDiff($("#startTime").val().trim(),$("#endTIme").val().trim(),"minute"));
+						var $bool=false;var $classIDBool=false;var $schoolIDBool=false;
+						var $stageIDBool=false;var $courseIDBool=false;var $countBool=false;
+						var $fractionBool=false;var $nameBool=false;var $startTimeBool=false;
+						var $endTImeBool=false;
+						$classIDBool=VerificationsCheckBox($("#classID"),"classID");//验证班级编号
+						$schoolIDBool=VerificationsChoolIdOrclassId($("#schoolID"));//验证学校编号
+						$stageIDBool=VerificationsChoolIdOrclassId($("#stageID"));//验证阶段编号
+						$courseIDBool=VerificationsCheckBox($("#courseID"),"courseID");//验证课程编号
+						$countBool=VerificationsChoolIdOrclassId($("#count"));//验证总题数
+						$fractionBool=VerificationsChoolIdOrclassId($("#fraction"));//验证总分数
+						$nameBool=VerificationsTextBox($("#name"),"您还没给试卷一个名字呢！");//验证试卷名称
+						$startTimeBool=VerificationsTextBox($("#startTime"));//验证试卷开始时间
+						$endTImeBool=VerificationsTextBox($("#endTIme"));
+						if($classIDBool==true&&$schoolIDBool==true&&$stageIDBool==true&&$courseIDBool==true
+						   &&$countBool==true&&$fractionBool==true&&$nameBool==true&&$startTimeBool==true
+						   &&$endTImeBool==true){
+						   	if(TimeDifference($("#startTime"),$("#endTIme"))){//验证开始时间大于结束时间
+						   			//验证考试时间在5~60分钟之间
+						   			if((GetDateDiff($("#startTime").val(),$("#endTIme").val(),"minute")<61)==true &&(GetDateDiff($("#startTime").val(),$("#endTIme").val(),"minute")>5)==true)
+						   			{$bool=true;}else{FriendlyPrompt("考试时间必须在5~60分钟区域哦~!")}
+						   	}
+						 }
+						if($bool){
+							var $data="&itemanalysis.stageId="+$("#stageID").val();							//获取阶段编号
+								$data+="&itemanalysis.courseId="+ObtainCheckBox($("#courseID"),"courseID"); //获取考试课程
+								$data+="&itemanalysis.count="+$("#count").val().trim();						//获取总题数
+								$data+="&itemanalysis.name="+$("#name").val();						        //获取试卷名称
+								$data+="&itemanalysis.fraction="+$("#fraction").val();					    //获取试卷总分
+								$data+="&itemanalysis.minute="+GetDateDiff($("#startTime").val().trim(),$("#endTIme").val().trim(),"minute");//考试时间
+								$data+="&admin.admin_ID=<%=session.getAttribute("adminid")%>";				//获取管理员编号
+								$data+="&admin.adminTypeID=<%=session.getAttribute("adminTypeID")%>";		//获取管理员类型编号
+								$data+="&itemanalysis.startTime="+$("#startTime").val();					//获取考试开始时间
+								$data+="&itemanalysis.endTime="+$("#endTIme").val();					    //获取考试结束时间
+								$data+="&itemanalysis.schoolId="+$("#schoolID").val();						//获取校区编号
+								$data+="&itemanalysis.classId="+ObtainCheckBox($("#classID"),"classID");	//获取考试的班级
+								//console.log($data);
+								AddItemAnalysis($data);
+						}
+						
+					})
+					//-----[新增考试]
+					function AddItemAnalysis($data){
+						$.post("<%=request.getContextPath()%>/Admin_AddItemAnalysis",$data,success,"json");
+						function success(result){
+							//console.log(result);
+							var $ts=result?"新增考试成功!":"新增考试失败……";
+							FriendlyPrompt($ts);
+							if(result){$("#AddItemAnalysis")[0].reset();}//重置表单
+						}
+					}
+					
+					//-----[END][新增考试]
+				
+				//-----[计算时间差]
+				function GetDateDiff(startTime, endTime, diffType) {
+				    //将xxxx-xx-xx的时间格式，转换为 xxxx/xx/xx的格式 
+				    var reg=/-/g;		
+				    startTime = startTime.replace(reg, "/");
+				    endTime = endTime.replace(reg, "/");
+				    //将计算间隔类性字符转换为小写
+				    diffType = diffType.toLowerCase();
+				    var sTime =new Date(startTime); //开始时间
+				    var eTime =new Date(endTime); //结束时间
+				    //作为除数的数字
+				    var timeType =1;
+				    switch (diffType) {
+				        case"second":
+				            timeType =1000;
+				        break;
+				        case"minute":
+				            timeType =1000*60;
+				        break;
+				        case"hour":
+				            timeType =1000*3600;
+				        break;
+				        case"day":
+				            timeType =1000*3600*24;
+				        break;
+				        default:
+				        break;
+				    }
+				    return parseInt((eTime.getTime() - sTime.getTime()) / parseInt(timeType));
+				}
+				//-----[END][计算时间差]
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+					
+				//-----[验证来两时间差]
+				function TimeDifference(element1,element2){
+					//console.log(element1.val()+" /"+element2.val());
+					var $bool=false;
+				   	$bool=element1.val() > element2.val()?false:true;
+				    if($bool==false){Laert_Prompt("开始时间和结束时间有错误哦！");}    
+				    return $bool;
+				}
+				//-----[END][验证来两时间差]
+				
+				//-----[弹出框提示]
+				function Laert_Prompt($TS){
+					layer.open({
+					  title: false
+					  ,closeBtn: 0
+					  ,anim: 6
+					  ,content: '<i class="layui-icon" style="font-size: 30px; color: #1E9FFF;">&#xe69c;</i>  '+$TS+''
+					  ,btnAlign: 'c'
+					  ,area: ['50']
+					  ,scrollbar: false
+					});
+				}
+				//-----[END][弹出框提示]
+				
+				//-----[验证复选框是否选中值]
+				function VerificationsCheckBox(element,$name){
+					var $bool=false;
+					var $lxid="";
+					 $('input:checkbox[name='+$name+']:checked').each(function(i){
+				       if(0==i){
+				        $lxid = $(this).val();
+				       }else{
+				        $lxid += (","+$(this).val());
+				       }
+				      });
+				     $bool= $lxid!=""?true:false;
+				     console.log($lxid);
+				     ShowPrompt(element,$bool,"您的还未选择考试的课程哦~")
+				     return $bool;
+				}
+				
+				
+			})
+		</script>
+	</head>
+	<body class="Body">
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		  <legend>创建新的考试</legend>
+		</fieldset>
+		
+		
+		
+	<form class="layui-form" id="AddItemAnalysis" action="" >	
+		
+	  <div class="layui-form-item">
+		    <label class="layui-form-label">学校:</label>
+		    <div class="layui-input-inline">
+		      <select id="schoolID" lay-filter="schoolID" name="schoolID" lay-verify="required" >
+		      </select>
+		    </div>
+		    <div class="layui-form-mid layui-word-aux schoolIDPrompt">您的学校编号好像有点问题哦~</div>
+		    
+	  </div>
+	  
+	 <div class="layui-form-item">	
+		<label class="layui-form-label">班级:</label>
+		 <div class="layui-input-block" id="ClassArr">
+		      
+	      </div>
+	    <div class="layui-form-mid layui-word-aux classIDPrompt">您的还未选择需要考试的班级哦~</div>
+	</div>	
+	  
+	  
+	  
+	  
+	   <div class="layui-form-item">
+		    <label class="layui-form-label">阶段:</label>
+		    <div class="layui-input-inline">
+		      <select lay-filter="stage" id="stageID" name="stageID" lay-verify="required" lay-filter="aihao">
+		      	
+		      </select>
+		    </div>
+		     <div class="layui-input-inline">
+		    	<div class="layui-form-mid layui-word-aux stageIDPrompt">您还未选择阶段编号哦~</div>
+		     </div>
+	  </div>
+		
+		
+		
+	<div class="layui-form-item">	
+		<label class="layui-form-label">课程:</label>
+		 <div id="courseArr" class="layui-input-block">
+	     </div>
+	     <div class="layui-input-block">
+	     	<div class="layui-form-mid layui-word-aux courseIDPrompt">您的还未选择课程哦~</div>
+	     </div>
+	</div>	
+		
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">总题数:</label>
+		    <div class="layui-input-inline">
+		      <select id="count" name="count" lay-verify="required" lay-filter="aihao">
+		        <option value="10" >10</option>
+		        <option value="25" >25</option>
+		        <option value="50" selected="selected">50</option>
+		      </select>
+		    </div>
+		    
+		    <div class="layui-form-mid layui-word-aux countPrompt">您还未选择总题数哦~</div>
+		    
+		     <label class="layui-form-label">总分数:</label>
+		    <div class="layui-input-inline">
+		      <select id="fraction" name="fraction" lay-verify="required" lay-filter="aihao">
+		        <option value="100" >100</option>
+		      </select>
+		    </div>
+		    <div class="layui-form-mid layui-word-aux fractionPrompt">您还未选择总分数哦~</div>
+		</div>  
+		  
+		  
+      <div class="layui-form-item">
+	    <label class="layui-form-label">试卷名称:</label>
+	    	<div class="layui-input-inline" >
+		       <input type="text" id="name" maxlength="25" name="name" lay-verify="title" autocomplete="off" placeholder="考试试卷名" class="layui-input">
+		    </div>
+		     <div class="layui-form-mid layui-word-aux namePrompt">您还没有给试卷起名字呢!~</div>
+	  </div>
+		  
+	   </div>
+		
+		  <div class="layui-form-item">
+		    <label class="layui-form-label">开始时间:</label>
+		    <div class="layui-input-inline">
+        		<input type="text" class="layui-input" name="startTime" id="startTime" placeholder="yyyy-MM-dd HH:mm:ss">
+		    </div>
+		    
+		    <div class="layui-form-mid layui-word-aux startTimePrompt">您得给个考试的开始时间啊！~</div>
+		    
+		     <label class="layui-form-label">结束时间:</label>
+		    <div class="layui-input-inline">
+		      <input type="text" class="layui-input" name="endTIme" id="endTIme" placeholder="yyyy-MM-dd HH:mm:ss">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux endTImePrompt">什么时候交卷嘞？!</div>
+		</div>   
+		  
+	   <div class="layui-form-item">
+	    <div class="layui-input-block">
+	      <button type="button" class="layui-btn" id="sub">立即提交</button>
+	      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+	    </div>
+	  </div> 
+		  
+	</form>	
+		<script>
+	layui.use(['form', 'layedit', 'laydate','util', 'layer','jquery'], function(){
+	  var form = layui.form
+	  ,layer = layui.layer
+	  ,layedit = layui.layedit
+	  ,laydate = layui.laydate;
+	   var util = layui.util
+	  ,laydate = layui.laydate
+	  ,layer = layui.layer;
+	  var $=layui.jquery;
+	  //创建一个编辑器
+	  var editIndex = layedit.build('LAY_demo_editor');
+		 
+	//时间选择器
+  laydate.render({
+     elem: '#startTime'
+    ,type: 'datetime'
+  }); 
+  
+    laydate.render({
+     elem: '#endTIme'
+    ,type: 'datetime'
+  	}); 
+  				//------[加载班级]
+				function changeload($data){
+					
+					$.post("<%=request.getContextPath()%>/School_GetList",$data,success,"json");
+					function success(result){
+						var $html="";
+						//console.log(result);
+						layui.each(result.Class,function(i,o){
+							$html+="<input type='checkbox'  id='classID' class='classID' name='classID' value='"+o[0]+"' title='"+o[1]+"'/>";
+						})
+						$("#ClassArr").html($html);
+						layui.form.render('checkbox');
+					}
+				}
+				//------[END][加载班级]
+  				//-------[加载阶段]
+				function loadStage($data){
+					$.post("<%=request.getContextPath()%>/Stage_GetStage",$data,success,"json");
+					function success(result){
+						
+						var $html="";
+						layui.each(result.course,function(i,o){
+							//console.log(o[0]);
+							$html+="<input type='checkbox' id='courseID' class='courseID' name='courseID' value='"+o[0]+"' title='"+o[1]+"'/>";
+						})
+						//console.log($html);
+						$("#courseArr").html($html);
+						layui.form.render('checkbox');
+					}
+					
+				}
+  				//-------[END][加载阶段]
+  	
+  				//校区切换事件
+				form.on('select(schoolID)', function(data){
+					//alert(1);
+					//console.log();
+					if(<%=session.getAttribute("schoolID")%>==0){
+						//console.log("admintype_0");
+						 changeload("school.id="+data.value);
+					}else{
+						 if(<%=session.getAttribute("schoolID")%>==$(this).val()){
+							changeload("school.id="+data.value);
+						}else{FriendlyPrompt("您的权限还不够哦！加油！");} 
+					}
+				})
+			   //阶段切换事件
+			   form.on('select(stage)', function(data){
+			   		//console.log(data.value);
+			   		loadStage("&stage.id="+data.value);
+			   })
+			   
+	});
+    </script>		
+	</body>
+</html>
+</c:if>
+<c:if test="${adminid==null }">
+	<script>location.href="<%=request.getContextPath()%>/AdminLogin.jsp";</script>
+</c:if>
+<c:if test="${adminTypeID>4 }">
+	<div style="margin-top:20%;margin-left:35%;">
+		<font color="red" style="font-size:50px;">您没有权限访问改功能页面</font>
+	</div>
+</c:if>

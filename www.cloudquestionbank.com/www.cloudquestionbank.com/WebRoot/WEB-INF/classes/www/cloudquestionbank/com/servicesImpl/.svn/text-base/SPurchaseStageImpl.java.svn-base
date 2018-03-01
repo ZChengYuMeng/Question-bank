@@ -1,0 +1,18 @@
+package www.cloudquestionbank.com.servicesImpl;
+
+import www.cloudquestionbank.com.dao.DIPurchaseStage;
+import www.cloudquestionbank.com.services.SIPurchaseStage;
+
+/**
+ * ServicesImpl【用户购买阶段表】
+ * @author ( 人 )
+ *
+ */
+public class SPurchaseStageImpl implements SIPurchaseStage{
+	DIPurchaseStage dip;
+
+	public void setDip(DIPurchaseStage dip) {
+		this.dip = dip;
+	}
+	
+}

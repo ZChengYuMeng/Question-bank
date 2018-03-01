@@ -1,0 +1,22 @@
+package www.cloudquestionbank.com.services;
+
+import www.cloudquestionbank.com.entity.Stage;
+
+/**
+ * Services【stage业务接口】
+ * @author ( 人 )
+ *
+ */
+public interface SIstage {
+	/**
+	 * 功能：获取阶段与课程
+	 * @param stage
+	 * @return
+	 */
+	String GetStageAanCourse(Stage stage);
+	/**
+	 * 获取所有课程
+	 * @return
+	 */
+	String  GetStage();
+}

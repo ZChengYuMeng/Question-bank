@@ -1,0 +1,20 @@
+#main1{
+		width: 920px; min-height: 450px; float: left;font-size: 14px;
+	}
+@media screen and (min-width:1000px){
+	#main1{
+	width: 920px; max-height: 450px; float: left;font-size: 14px;	
+	}
+}
+
+@media screen  and (min-width:640px )and (max-width:1000px) {
+	#main1{
+	max-width: 620px; max-height: 350px; float: left;font-size: 14px;	
+	}
+}
+@media  screen and (max-width:640px ) {
+	#main1{
+	max-width: 300px; max-height: 250px; float: left;font-size: 14px;	
+	}
+}
+

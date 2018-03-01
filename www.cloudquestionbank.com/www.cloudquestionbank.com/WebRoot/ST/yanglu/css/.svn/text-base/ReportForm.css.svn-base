@@ -1,0 +1,36 @@
+			
+#main{height:350px;  width: 720px; float: left;}
+#main2{height:350px; width:320px; float: left;}
+@media screen and (min-width:1000px){
+				#main{
+					max-height:400px;  max-width: 720px; float: left;
+				}
+				#main2{
+					max-height:400px;  max-width: 320px; float: left;
+				}
+				
+			}
+@media screen  and (min-width:900px )and (max-width:1000px) {
+				#main{
+					max-height:400px;  max-width: 520px; float: left;
+				}
+				#main2{
+					max-height:400px;  max-width: 320px; float: left;
+				}
+}
+@media screen  and (min-width:640px )and (max-width:900px) {
+				#main{
+					max-height:400px;  max-width: 300px; float: left;
+				}
+				#main2{
+					max-height:400px;  max-width: 300px; float: left;
+				}
+}
+@media  screen and (max-width:640px ) {
+				#main{
+					max-height:200px;  max-width: 300px; float: left;
+				}
+				#main2{
+					max-height:200px;  max-width: 300px; float: left;
+				}
+}

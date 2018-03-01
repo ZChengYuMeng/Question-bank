@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+						   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						   http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+						    http://www.springframework.org/schema/context
+        					http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	<!--注解扫描
+	<context:component-scan base-package="www.cloudquestionbank.com"></context:component-scan>
+	-->
+	<!-- 数据源 -->
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="url" 	  		 value="jdbc:mysql://127.0.0.1:3306/cloudquestionbank?characterEncoding=UTF-8"></property>
+		<property name="username" 		 value="root"></property>
+		<property name="password" 		 value="123456"></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="maxActive" value="1000" ></property>
+		<property name="maxIdle" value="30" ></property><!--最大空闲时间，30秒内未使用则连接被丢弃。若为0则永不丢弃。默认值: 0 -->
+		<property name="maxWait" value="10000" ></property>
+	</bean>
+	<!--sessionFactory  -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>www/cloudquestionbank/com/entity/Admin.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Adminstatus.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Admintype.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Class.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Comment.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Completecurriculum.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Course.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Examinationhistory.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Examinationhistorydetails.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Examinationpaperdetails.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Guest.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Gueststatus.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Guestvip.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Itemanalysis.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Operationrecord.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Purchasestage.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/School.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Stage.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Subject.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Fabulousgarbage.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Topicselftesthistory.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Topicselftesthistorydetails.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Backgroundmanagementnavigationbar.hbm.xml</value>
+				<value>www/cloudquestionbank/com/entity/Notice.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!--[END]sessionFactory  -->
+	
+	
+	<!--  定义事务管理器  -->
+		<bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+			<property name="sessionFactory" ref="sessionFactory"/>
+		</bean>
+		<tx:advice id="txAdvice" transaction-manager="txManager">
+		<!--  定义事务属性,声明事务规则  -->
+		<tx:attributes>
+		<tx:method name="find*" 	read-only="true"/>
+		<tx:method name="search*" 	read-only="true"/>
+		<tx:method name="query*" 	read-only="true"/>
+		<tx:method name="add*" 		propagation="REQUIRED"/>
+		<tx:method name="register"  propagation="REQUIRED"/>
+		<tx:method name="del*" 		propagation="REQUIRED"/>
+		<tx:method name="update*" 	propagation="REQUIRED"/>
+		<tx:method name="insert*" 	propagation="REQUIRED"/>
+		<tx:method name="do*" 		propagation="REQUIRED"/>
+		<tx:method name="Get*" 		propagation="REQUIRED"/>
+		<tx:method name="*" 		propagation="REQUIRED" read-only="true"/>
+		</tx:attributes>
+		</tx:advice>
+		<aop:config>
+		<!--  定义切入点  -->
+			<aop:pointcut id="serviceMethod" expression="execution(* www.cloudquestionbank.com.dao.impl.*.*(..))"/>
+		<!--  将事务通知与切入点组合  -->
+			<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod"/>
+		</aop:config>
+	<!--  [END]定义事务管理器  -->
+	
+	<!-- 实体类 -->
+		<!-- Entity[管理员]		   --><bean id="Admin" 								class="www.cloudquestionbank.com.entity.Admin"></bean>
+		<!-- Entity[管理员状态 ]	   --><bean id="Adminstatus" 						class="www.cloudquestionbank.com.entity.Adminstatus"></bean>
+		<!-- Entity[管理员类型]	   --><bean id="Admintype" 							class="www.cloudquestionbank.com.entity.Admintype"></bean>
+		<!-- Entity[班级]		   --><bean id="Class" 								class="www.cloudquestionbank.com.entity.Class"></bean>
+		<!-- Entity[试题评论 ]	   --><bean id="Comment" 							class="www.cloudquestionbank.com.entity.Comment"></bean>
+		<!-- Entity[用户以完成课程] --><bean id="Completecurriculum" 					class="www.cloudquestionbank.com.entity.Completecurriculum"></bean>
+		<!-- Entity[课程表 ] 		   --><bean id="Course" 							class="www.cloudquestionbank.com.entity.Course"></bean>
+		<!-- Entity[考试历史]	   --><bean id="Examinationhistory" 				class="www.cloudquestionbank.com.entity.Examinationhistory"></bean>
+		<!-- Entity[考试历史详情表] --><bean id="Examinationhistorydetails" 			class="www.cloudquestionbank.com.entity.Examinationhistorydetails"></bean>
+		<!-- Entity[试卷详情表]	   --><bean id="Examinationpaperdetails" 			class="www.cloudquestionbank.com.entity.Examinationpaperdetails"></bean>
+		<!-- Entity[点踩表]		   --><bean id="Fabulousgarbage" 					class="www.cloudquestionbank.com.entity.Fabulousgarbage"></bean>
+		<!-- Entity[用户表] 		   --><bean id="Guest" 								class="www.cloudquestionbank.com.entity.Guest"></bean>
+		<!-- Entity[用户状态]	   --><bean id="Gueststatus" 						class="www.cloudquestionbank.com.entity.Gueststatus"></bean>
+		<!-- Entity[VIP表[用户]	   --><bean id="Guestvip"							class="www.cloudquestionbank.com.entity.Guestvip"></bean>
+		<!-- Entity[试卷表]		   --><bean id="Itemanalysis" 						class="www.cloudquestionbank.com.entity.Itemanalysis"></bean>
+		<!-- Entity[[操作记录表]    --><bean id="Operationrecord" 					class="www.cloudquestionbank.com.entity.Operationrecord"></bean>
+		<!-- Entity[用户购买阶段表] --><bean id="Purchasestage" 						class="www.cloudquestionbank.com.entity.Purchasestage"></bean>
+		<!-- Entity[学校表]		   --><bean id="School" 							class="www.cloudquestionbank.com.entity.School"></bean>
+		<!-- Entity[阶段表] 		   --><bean id="Stage" 						    	class="www.cloudquestionbank.com.entity.Stage"></bean>
+		<!-- Entity[题目表]		   --><bean id="Subject" 							class="www.cloudquestionbank.com.entity.Subject"></bean>
+	    <!--Entity[题目自测历史表]  --><bean id="Topicselftesthistory" 		        class="www.cloudquestionbank.com.entity.Topicselftesthistory"></bean>
+	   <!--Entity[题目自测历史详情表]--><bean id="Topicselftesthistorydetails" 		class="www.cloudquestionbank.com.entity.Topicselftesthistorydetails"></bean>
+		<!--Entity[后台管理导航条]  --><bean id="Backgroundmanagementnavigationbar" class="www.cloudquestionbank.com.entity.Backgroundmanagementnavigationbar"></bean>
+		<!--Entity[公告表]        --><bean id="Notice"   							 class="www.cloudquestionbank.com.entity.Notice"></bean>
+	<!-- [END]实体类 -->
+	
+	<!-- DAOImpl -->
+		<!-- DAO层【[管理员]实现类】 	   	  --><bean id="DAdminImpl" 				   		 class="www.cloudquestionbank.com.daoImpl.DAdminImpl" p:sessionFactory-ref="sessionFactory" p:du-ref="DImplU" ></bean>
+		<!-- DAO层【[管理员状态]实现类】 	   	  --><bean id="DAdminStatusImpl" 	       		 class="www.cloudquestionbank.com.daoImpl.DAdminStatusImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[管理员类型表]实现类】--><bean id="DAdminTypeImpl" 			   		 class="www.cloudquestionbank.com.daoImpl.DAdminTypeImpl" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[班级]实现类】 	  --><bean id="DClassImpl" 				   		 class="www.cloudquestionbank.com.daoImpl.DClassImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DcommentImpl" 			   		 class="www.cloudquestionbank.com.daoImpl.DcommentImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DcompleteCurriculumImpl" 	   		 class="www.cloudquestionbank.com.daoImpl.DcompleteCurriculumImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[课程表]实现类】 	  --><bean id="DcourseImpl" 				   		 class="www.cloudquestionbank.com.daoImpl.DcourseImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DExaminationHistoryDetailsImpl" 	 class="www.cloudquestionbank.com.daoImpl.DExaminationHistoryDetailsImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DExaminationHistoryImpl" 		 	 class="www.cloudquestionbank.com.daoImpl.DExaminationHistoryImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[试卷详情表]实现类】--><bean id="DExaminationPaperDetailsImpl"   	 class="www.cloudquestionbank.com.daoImpl.DExaminationPaperDetailsImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DFabulousGarbageImpl" 		   	 class="www.cloudquestionbank.com.daoImpl.DFabulousGarbageImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[用户]实现类】 	  --><bean id="DGuestImpl" 					   	 class="www.cloudquestionbank.com.daoImpl.DGuestImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DGuestStatusImpl" 			   	 class="www.cloudquestionbank.com.daoImpl.DGuestStatusImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DGuestVipImpl" 				   	 class="www.cloudquestionbank.com.daoImpl.DGuestVipImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[试卷表]实现类】 	  --><bean id="DitemAnalysisImpl" 			   	 class="www.cloudquestionbank.com.daoImpl.DitemAnalysisImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DOperationRecordImpl" 		   	 class="www.cloudquestionbank.com.daoImpl.DOperationRecordImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[]实现类】 	   	  --><bean id="DPurchaseStageImpl" 			   	 class="www.cloudquestionbank.com.daoImpl.DPurchaseStageImpl" p:sessionFactory-ref="sessionFactory"></bean>
+		<!-- DAO层【[学校]实现类】 	  --><bean id="DSchoolImpl" 				  	     class="www.cloudquestionbank.com.daoImpl.DSchoolImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[阶段表]实现类】 	  --><bean id="DstageImpl" 				       	 class="www.cloudquestionbank.com.daoImpl.DstageImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[题目表]实现类】 	  --><bean id="DsubjectImpl"				   		 class="www.cloudquestionbank.com.daoImpl.DsubjectImpl" p:sessionFactory-ref="sessionFactory" p:DU-ref="DImplU"></bean>
+		<!-- DAO层【[后台管理导航条]实现类】--><bean id="DBackgroundManagementNavigationBarImple" class="www.cloudquestionbank.com.daoImpl.DBackgroundManagementNavigationBarImple"  p:du-ref="DImplU"></bean>
+		<!-- DAO层【[公告表]实现类】        --><bean id="DNoticeImpl" 					 class="www.cloudquestionbank.com.daoImpl.DNoticeImpl" p:DU-ref="DImplU" ></bean>
+	<!-- [END]DAOImpl -->
+	
+	<!-- ServicesImpl -->
+		<!-- Services层【[管理员]实现类】 	   	  --><bean id="SAdminImpl" 						p:dia-ref="DAdminImpl"
+			 									class="www.cloudquestionbank.com.servicesImpl.SAdminImpl"></bean>
+		<!-- Services层【[管理员状态]实现类】 	   	  --><bean id="SAdminStatusImpl" 				p:dia-ref="DAdminStatusImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SAdminStatusImpl"></bean>
+		<!-- Services层【[管理员类型表]实现类】 	  --><bean id="SAdminTypeImpl" 					p:dia-ref="DAdminTypeImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SAdminTypeImpl"></bean>
+		<!-- Services层【[班级]实现类】 	   	  --><bean id="SClassImpl" 						p:dic-ref="DClassImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SClassImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="ScommentImpl" 					p:dic-ref="DcommentImpl"
+												class="www.cloudquestionbank.com.servicesImpl.ScommentImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="ScompleteCurriculumImpl"  		p:dic-ref="DcompleteCurriculumImpl"
+												class="www.cloudquestionbank.com.servicesImpl.ScompleteCurriculumImpl"></bean>
+		<!-- Services层【[课程表]实现类】 	  --><bean id="ScourseImpl" 						p:dic-ref="DcourseImpl"
+												class="www.cloudquestionbank.com.servicesImpl.ScourseImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SFabulousGarbageImpl" 			p:dif-ref="DFabulousGarbageImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SFabulousGarbageImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SGuestImpl" 						p:dig-ref="DGuestImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SGuestImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SGuestStatusImpl" 				p:dig-ref="DGuestStatusImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SGuestStatusImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SGuestVipImpl" 					p:dig-ref="DGuestVipImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SGuestVipImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SPurchaseStageImpl" 				p:dip-ref="DPurchaseStageImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SPurchaseStageImpl"></bean>
+		<!-- Services层【[学校]实现类】 	   	  --><bean id="SSchoolImpl" 						p:dis-ref="DSchoolImpl" p:sic-ref="SClassImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SSchoolImpl"></bean>
+		<!-- Services层【[阶段表]实现类】 	  --><bean id="SstageImpl" 						p:dis-ref="DstageImpl"  p:sic-ref="ScourseImpl" p:course-ref="Course"
+												class="www.cloudquestionbank.com.servicesImpl.SstageImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SsubjectImpl" 					p:dis-ref="DsubjectImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SsubjectImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SExaminationHistoryDetailsImpl" 	p:die-ref="DExaminationHistoryDetailsImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SExaminationHistoryDetailsImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SExaminationHistoryImpl" 			p:die-ref="DExaminationHistoryImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SExaminationHistoryImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SExaminationPaperDetailsImpl" 	p:die-ref="DExaminationPaperDetailsImpl"	
+												class="www.cloudquestionbank.com.servicesImpl.SExaminationPaperDetailsImpl"></bean>
+		<!-- Services层【[]实现类】 	   	  --><bean id="SOperationRecordImpl" 			p:dio-ref="DOperationRecordImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SOperationRecordImpl"></bean>
+		<!-- Services层【[试卷表]实现类】 	  --><bean id="SitemAnalysisImpl" 				p:dii-ref="DitemAnalysisImpl" 
+												p:sib-ref="SsubjectImpl" p:SEPD-ref="SExaminationPaperDetailsImpl" p:ex-ref="Examinationpaperdetails" p:notice-ref="Notice"
+												p:sno-ref="SNoticeImpl" p:myrdm-ref="My_RandomUtil" p:ssc-ref="SSchoolImpl" p:school-ref="School" p:vd-ref="VeDate"
+												class="www.cloudquestionbank.com.servicesImpl.SitemAnalysisImpl"></bean>
+		<!-- Services层【[后台管理导航条]实现类】 --><bean id="SBackgroundManagementNavigationBarImpl" 	p:DIB-ref="DBackgroundManagementNavigationBarImple"
+												class="www.cloudquestionbank.com.servicesImpl.SBackgroundManagementNavigationBarImpl"></bean>
+		<!-- Services层【[公告表]实现类】  	  --><bean id="SNoticeImpl" 	p:din-ref="DNoticeImpl"
+												class="www.cloudquestionbank.com.servicesImpl.SNoticeImpl"></bean>
+		
+		
+	<!-- [END]ServicesImpl -->
+	
+	
+	<!-- Action -->
+		<!-- Action[管理员] -->
+		<bean id="AdminAction"  					
+			p:admin-ref="Admin" p:sbnm-ref="SBackgroundManagementNavigationBarImpl" p:itemanalysis-ref="Itemanalysis"
+			p:siAdmin-ref="SAdminImpl" p:siAdminStatus-ref="SAdminStatusImpl" p:sit-ref="SitemAnalysisImpl"
+			p:STy-ref="SAdminTypeImpl" p:RDU-ref="My_RandomUtil" p:sis-ref="SAdminStatusImpl" p:SItype-ref="SAdminTypeImpl"
+			p:school-ref="School" p:sic-ref="SSchoolImpl" p:siclass-ref="SClassImpl" p:cs-ref="Class" 
+ 			class="www.cloudquestionbank.com.action.AdminAction" scope="prototype"></bean>
+		<!-- [END]Action[管理员] -->
+		
+		<!-- Action[管理员类型] -->
+		<bean id="AdminTypeAction"
+			p:admintype-ref="Admintype" 
+			p:siAdminType-ref="SAdminTypeImpl" 
+			class="www.cloudquestionbank.com.action.AdminTypeAction" scope="prototype"></bean>
+		<!-- [END]Action[管理员类型] -->
+		
+		<!-- Action[班级] -->
+		<bean id="ClassAction" 
+			p:classinfo-ref="Class"
+			p:sClassImpl-ref="SClassImpl"
+			class="www.cloudquestionbank.com.action.ClassAction" scope="prototype"></bean>
+		<!-- [END]Action[班级] -->
+		<!-- Action[用户] -->
+		<bean id="GuestAction"
+			p:guest-ref="Guest" p:scourse-ref="ScourseImpl"  p:sIGuestStatus-ref="SGuestStatusImpl" p:course-ref="Course" 
+			p:siGuest-ref="SGuestImpl"  p:RDU-ref="My_RandomUtil" p:admin-ref="Admin"
+		    class="www.cloudquestionbank.com.action.GuestAction" scope="prototype"></bean>
+		<!-- [END]Action[用户] -->
+		<!-- Action[题目] -->
+		<bean id="SubjectAction"
+			p:subject-ref="Subject" p:admin-ref="Admin" p:siAdmin-ref="SAdminImpl" p:course-ref="Course"  
+		    p:sisubject-ref="SsubjectImpl" p:guest-ref="Guest" 
+		    class="www.cloudquestionbank.com.action.SubjectAction" scope="prototype"></bean>
+		<!-- [END]Action[题目] -->
+		<!-- Action[校区] -->
+			<bean id="SchoolAction"  p:school-ref="School" p:admin-ref="Admin" p:siSchool-ref="SSchoolImpl" 
+			class="www.cloudquestionbank.com.action.SchoolAction" scope="prototype"></bean>
+		<!-- [END]Action[题目] -->
+		<!-- Action[阶段表]  -->
+			<bean id="StageAction" p:stage-ref="Stage" p:sistage-ref="SstageImpl"
+			class="www.cloudquestionbank.com.action.StageAction" scope="prototype"></bean>
+		<!-- [END]Action[阶段表]  -->
+		
+		<!-- Action[主页] -->
+			 <bean id="IndexAction"
+			p:sisubject-ref="SsubjectImpl" p:guest-ref="Guest" p:sicourse-ref="ScourseImpl" p:school-ref="School" p:class1-ref="Class"
+			class="www.cloudquestionbank.com.action.IndexAction" scope="prototype">
+			</bean> 
+		<!-- [END]Action[主页] -->
+	<!-- [END]Action -->
+	
+	<!-- [Util] -->
+		<!-- [DAO_Impl类帮助类]】 --><bean id="DImplU"				   		 class="www.cloudquestionbank.com.daoImpl.DI_Impl_Util" p:sessionFactory-ref="sessionFactory"></bean>	
+		<!-- [Util]随机数生成类 --><bean id="My_RandomUtil" 				 class="www.cloudquestionbank.com.util.My_RandomUtil"></bean>
+		<!-- [Util]随机数生成类 --><bean id="VeDate" 				 		 class="www.cloudquestionbank.com.util.VeDate"></bean>
+	<!-- [END][Util] -->
+	</beans>

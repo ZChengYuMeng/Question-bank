@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+ <constant name="struts.i18n.encoding" value="UTF-8"></constant>
+ <constant name="struts.ui.theme" value="simple"/>
+<package name="default" namespace="/" extends="struts-default,json-default" >
+	<!-- ACtion管理员 -->
+	<action name="Admin_*" method="{1}" class="AdminAction">
+		<result name="error">/BackstageMain.jsp</result>
+		<result name="admin_logindl">/BackstageMain.jsp</result>
+		<result name="status">/AdminLogin.jsp</result>
+		<result name="admin_findid" type="json">adminfindid</result>
+		<result name="admin_zhuxiao">/AdminLogin.jsp</result>
+		<result name="Upload">/NewAdministrator.jsp</result>
+		<result name="ADDerror">/error.jsp</result>
+		<result name="UploadSchool">/NewSchool.jsp</result>
+		<!-- 定义文件上传拦截器 -->
+        <interceptor-ref name="fileUpload">
+            <!-- 设置文件上传大小 -->
+            <param name="maximumSize">409600</param>
+        </interceptor-ref>
+        <!-- 自定义了拦截器后必手动定义默认的拦截器，否则默认的拦截器不会被执行 -->
+        <interceptor-ref name="defaultStack"></interceptor-ref>
+	</action>
+	<!-- [END]ACtion管理员 -->
+	<!-- ACtion用户 -->
+	<action name="Guest_*" method="{1}" class="GuestAction">
+		<result name="loginfind" type="json">loginlist</result>
+		<result name="sanlevalfind" type="json"></result>
+		<result name="error">/Login.jsp</result>
+		<result name="logindl" type="json">status</result>
+		<result name="status" type="json">status</result>
+		<result name="loginname" type="json">loginlist</result>
+		<result name="zhixiao" type="json">status</result>
+		<result name="courseFind" type="json">countlist</result>
+		<result name="courseFind2" type="json"></result>
+		<result name="twolevelfind" type="json">twolevel</result>
+		<result name="Upload">/NewUsers.jsp</result>
+		<result name="ADDerror">/error.jsp</result>
+		<!-- 定义文件上传拦截器 -->
+        <interceptor-ref name="fileUpload">
+            <!-- 设置文件上传大小 -->
+            <param name="maximumSize">409600</param>
+        </interceptor-ref>
+        <!-- 自定义了拦截器后必手动定义默认的拦截器，否则默认的拦截器不会被执行 -->
+        <interceptor-ref name="defaultStack"></interceptor-ref>
+	</action>
+	<!-- [END]ACtion用户 -->
+	<!-- ACtion题目 -->
+	<action name="Subject_*" method="{1}" class="SubjectAction">
+		<result name="kcall" type="json">kcall</result>
+		<result name="ins_subject">/UploadTestQuestions.jsp</result>
+		<result name="find_topic">/Examination.jsp</result>
+		<result name="Thewrongquestion">/Examination.jsp</result>
+		<result name="find_timu" type="json">listtimu</result>
+		<result name="update_paper">/index.jsp</result>
+		<result name="error">/Examination.jsp</result>
+		<result name="find_subject" type="json">kCount</result>
+		<result name="Checkerror" type="json"></result>
+	</action>
+	<action name="Index_*" method="{1}" class="IndexAction">
+	<result name="tuxing" type="json"></result>
+	<result name="Ranking" type="json"></result>
+	<result name="cuoTi" type="json"></result>
+	</action>
+	<!-- [END]ACtion题目 -->
+	<!-- ACtion校区 -->
+	<action name="School_*" method="{1}" class="SchoolAction">
+			
+	</action>
+	<!-- [END]ACtion校区 -->
+	<!-- ACtion阶段表 -->
+	<action name="Stage_*" method="{1}" class="StageAction">
+		
+	</action>
+	<!-- [END]ACtion阶段表 -->
+	<!-- Action班级表 -->
+	<action name="Class_*" method="{1}" class="ClassAction">
+	
+	</action>
+	<!-- [END]Action班级表 -->
+</package>
+</struts>    

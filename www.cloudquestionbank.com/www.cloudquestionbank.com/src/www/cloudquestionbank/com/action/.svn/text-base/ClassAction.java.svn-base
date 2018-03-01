@@ -1,0 +1,33 @@
+package www.cloudquestionbank.com.action;
+
+import www.cloudquestionbank.com.entity.Class;
+import www.cloudquestionbank.com.servicesImpl.SClassImpl;
+
+import com.opensymphony.xwork2.ActionSupport;
+/**
+ * Action【班级】
+ * @author ( 人 )
+ *
+ */
+public class ClassAction extends ActionSupport{
+	//属性区
+	Class classinfo;			//班级实体类
+	SClassImpl sClassImpl;		//班级业务接口
+	//方法区
+	
+	
+	
+	
+	//↓Get/Set区
+	public Class getClassinfo() {
+		return classinfo;
+	}
+	public void setClassinfo(Class classinfo) {
+		this.classinfo = classinfo;
+	}
+	public void setsClassImpl(SClassImpl sClassImpl) {
+		this.sClassImpl = sClassImpl;
+	}
+	
+	
+}

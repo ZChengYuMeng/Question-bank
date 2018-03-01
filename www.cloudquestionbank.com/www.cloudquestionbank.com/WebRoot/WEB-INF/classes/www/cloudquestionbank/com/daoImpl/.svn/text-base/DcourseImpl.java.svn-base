@@ -1,0 +1,80 @@
+package www.cloudquestionbank.com.daoImpl;
+
+import java.util.List;
+
+import org.hibernate.Query;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import www.cloudquestionbank.com.dao.DIcourse;
+import www.cloudquestionbank.com.entity.Completecurriculum;
+import www.cloudquestionbank.com.entity.Course;
+import www.cloudquestionbank.com.entity.Topicselftesthistory;
+
+/**
+ * DAOImpl¡¾¿Î³Ì±í¡¿
+ * @author ( ÈË )
+ *
+ */
+public class DcourseImpl extends HibernateDaoSupport implements DIcourse {
+	DI_Impl_Util DU;
+	public void setDU(DI_Impl_Util dU) {
+		DU = dU;
+	}
+
+	@Override
+	public List<Course> find(Course course) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void add(Course course) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Course course) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Course course) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Course findID(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+/*-------------------------------------------------------------------------*/
+	@Override
+	public List courseFind(String sql, String... str) {
+		return DU.GetList(sql, str);
+	}
+
+	@Override
+	public List course2level(String sql, String... str) {
+		//System.out.println("/t"+query.getQueryString());
+		return DU.GetList(sql, str);
+	}
+
+	@Override
+	public List<Topicselftesthistory> find_topicselftesthistory(Topicselftesthistory tsty) {
+		// TODO Auto-generated method stub
+		return this.getHibernateTemplate().find(" from Topicselftesthistory where coursed="+tsty.getCoursed());
+	}
+
+	@Override
+	public List<Completecurriculum> find_culum(String sql) {
+		// TODO Auto-generated method stub
+		Query query = this.getSession().createQuery(sql);
+		return query.list();
+	}
+
+}

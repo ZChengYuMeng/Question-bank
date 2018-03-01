@@ -1,0 +1,9 @@
+package www.cloudquestionbank.com.services;
+/**
+ * Services【用户购买阶段表业务接口】
+ * @author ( 人 )
+ *
+ */
+public interface SIPurchaseStage {
+
+}

@@ -1,0 +1,40 @@
+package www.cloudquestionbank.com.servicesImpl;
+
+import java.util.List;
+
+import com.google.gson.Gson;
+
+import www.cloudquestionbank.com.dao.DIClass;
+import www.cloudquestionbank.com.entity.Admin;
+import www.cloudquestionbank.com.entity.Class;
+import www.cloudquestionbank.com.services.SIClass;
+
+/**
+ * ServicerImpl°æ∞‡º∂±Ì°ø
+ * @author ( »À )
+ *
+ */
+public class SClassImpl implements SIClass{
+	DIClass dic;
+	Gson gson=new Gson();
+	public void setDic(DIClass dic) {
+		this.dic = dic;
+	}
+
+	@Override
+	public List GetList(String... Strs) {
+		String sql="select id,cname from Class where schoolID=?";
+		return dic.Getlist(sql, Strs);
+	}
+
+	@Override
+	public String AddClass(Class Cs) {
+		String sql="insert Class(cname,schoolID,state,classSize,admin_ID,createTime,updateTime) "+
+					"VALUES('"+Cs.getCname()+"',"+Cs.getSchoolId()+",0,"+Cs.getClassSize()+",'"+Cs.getAdminId()+"',now(),now()) ";
+		System.out.println(sql);
+		return gson.toJson(dic.OptionClass(sql));
+	}
+	
+	
+	
+}

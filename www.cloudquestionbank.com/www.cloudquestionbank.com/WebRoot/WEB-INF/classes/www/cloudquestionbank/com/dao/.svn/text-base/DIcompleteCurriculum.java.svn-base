@@ -1,0 +1,50 @@
+package www.cloudquestionbank.com.dao;
+
+import java.util.List;
+
+import www.cloudquestionbank.com.entity.Completecurriculum;
+
+
+/**
+ *DAO层【用户以完成课程接口】
+ * @author ( 人 )
+ *
+ */
+public interface DIcompleteCurriculum {
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是查询用户以完成课程的查询方法
+	 * @param comment 参数是一个Completecurriculum对象
+	 * @return 返回一个List<Completecurriculum>对象
+	 */
+	public List<Completecurriculum> find(Completecurriculum completecurriculum);
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是增加用户以完成课程的增加方法
+	 * @param Completecurriculum 参数是一个Completecurriculum对象
+	 * 无返回值
+	 */
+	public void add(Completecurriculum completecurriculum);
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是修改用户以完成课程的修改方法
+	 * @param Completecurriculum 参数是一个Completecurriculum对象
+	 * 无返回值
+	 */
+	public void update(Completecurriculum completecurriculum);
+	/**
+	 *  署名：胡歌
+	 *  方法名：这是删除用户以完成课程的删除方法
+	 * @param Completecurriculum 参数是一个Completecurriculum对象
+	 * 无返回值
+	 */
+	public void delete(Completecurriculum completecurriculum);
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是用户以完成课程的删除 修改通用的方法
+	 * @param id 参数是一个int类型的id
+	 * @return 返回一个Completecurriculum对象
+	 */
+	public Completecurriculum findID(int id);
+	
+}

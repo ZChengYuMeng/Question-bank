@@ -1,0 +1,7 @@
+eclipse.preferences.version=1
+<<<<<<< .mine
+validator.Checked=WebRoot/WEB-INF/static,WebRoot/WEB-INF/ST,WebRoot/ST
+=======
+validator.Checked=WebRoot/ST
+>>>>>>> .r31
+validator.Unchecked=

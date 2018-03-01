@@ -1,0 +1,41 @@
+package www.cloudquestionbank.com.services;
+
+import java.util.HashMap;
+import java.util.List;
+
+import www.cloudquestionbank.com.entity.School;
+
+/**
+ * Services【学校业务接口】
+ * @author ( 人 )
+ *
+ */
+public interface SISchool {
+	/**
+	 * 功能：获取校区和所属下的班级
+	 * @param school
+	 * @return
+	 */
+	HashMap<String, Object> GetList(School school);
+	
+	/**
+	 * 功能:获取校区集合
+	 * @param school
+	 * @return
+	 */
+	HashMap<String, Object>GetSchoolList(School school);
+	
+	/**
+	 * 功能：获取学校信息
+	 * @param school
+	 * @return
+	 */
+	List GetSchool(School school);
+	/**
+	 * 功能:新增校区
+	 * @param school
+	 * @return
+	 */
+	boolean AddSchool(School school);
+	
+}

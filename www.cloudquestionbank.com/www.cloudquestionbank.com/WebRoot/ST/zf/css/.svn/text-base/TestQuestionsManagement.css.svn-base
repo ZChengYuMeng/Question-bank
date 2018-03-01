@@ -1,0 +1,30 @@
+/*杩欓噷鏄鐩鐞嗙晫闈㈢殑css澶栭儴鏍峰紡*/
+.layui-btn{width: 30px;padding: 0px;}
+*{padding: 0px ;margin: 0px;}
+.layui-table{width: 95%;margin: auto;margin-top: 30px;}
+.search{margin-top: 20px;}
+.search_text{float: left;margin-left: 30%;width: 300px;}
+.search_btn{float: left;margin-left: 20px;width: 70px;}
+.search_btn button{width: 100%;}
+.SearchResult {position: absolute;top:90px}
+			/*1000px浠ヤ笂灞忓箷鏄剧ず*/
+			@media screen and (min-width:1200px){
+				
+			}
+			/*灞忓箷瀹藉害鍦�640~1000px*/
+			@media screen  and (min-width:640px )and (max-width:1200px) {
+				
+				
+			}
+			/*灞忓640px浠ヤ笅 */
+			@media  screen and (max-width:640px ) {
+			.search_text{float: left;margin-left: 5%;width:150px;}
+			.SearchResult  li{width: 140px;}	
+			.page{margin-left:18%;}
+			}
+			
+.page{margin-left:30% ;min-width:300px;margin-top: 20px;}
+#subject {margin-top: 20px;}
+.operation{width: 70px;}
+.Upd{max-width: 960px;margin: auto;}
+.Notice{border: 1px solid orangered;}

@@ -1,0 +1,78 @@
+package www.cloudquestionbank.com.dao;
+
+import java.util.List;
+
+import www.cloudquestionbank.com.entity.Completecurriculum;
+import www.cloudquestionbank.com.entity.Course;
+import www.cloudquestionbank.com.entity.Topicselftesthistory;
+
+
+/**
+ * DAO层【课程表接口】
+ * @author ( 人 )
+ *
+ */
+public interface DIcourse {
+	/**
+	 * 功能:课程阶段题数查询
+	 * @param sql查询语句
+	 * @param str所需参数
+	 * @returnObject[]
+	 * 课程级别:一级
+	 */
+	public List courseFind(String sql,String...str);
+	
+	/**
+	 * 功能:课程阶段题数查询
+	 * @param sql查询语句
+	 * @param str所需参数
+	 * @returnObject[]
+	 * 课程级别:二级
+	 */
+	public List course2level(String sql,String...str);
+	public  List<Topicselftesthistory> find_topicselftesthistory(Topicselftesthistory tsty);
+	public List<Completecurriculum> find_culum(String sql);
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是查询课程表的查询方法
+	 * @param Course 参数是一个Course对象
+	 * @return 返回一个List<Course>对象
+	 */
+	public List<Course> find(Course course);
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是增加课程表的增加方法
+	 * @param comment 参数是一个Comment对象
+	 * 无返回值
+	 */
+	public void add(Course course);
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是修改课程表的修改方法
+	 * @param Course 参数是一个Course对象
+	 * 无返回值
+	 */
+	public void update(Course course);
+	/**
+	 *  署名：胡歌
+	 *  方法名：这是删除课程表的删除方法
+	 * @param Course 参数是一个Course对象
+	 * 无返回值
+	 */
+	public void delete(Course course);
+	/**
+	 * 署名：胡歌
+	 * 方法名：这是课程表的删除 修改通用的方法
+	 * @param id 参数是一个int类型的id
+	 * @return 返回一个Course对象
+	 */
+	public Course findID(int id);
+	
+}

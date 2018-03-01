@@ -1,0 +1,47 @@
+package www.cloudquestionbank.com.daoImpl;
+
+import java.util.List;
+
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import www.cloudquestionbank.com.dao.DIcompleteCurriculum;
+import www.cloudquestionbank.com.entity.Completecurriculum;
+
+/**
+ * DAOImpl【用户以完成课程】
+ * @author ( 人 )
+ *
+ */
+public class DcompleteCurriculumImpl extends HibernateDaoSupport implements DIcompleteCurriculum {
+
+	@Override
+	public List<Completecurriculum> find(Completecurriculum completecurriculum) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void add(Completecurriculum completecurriculum) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(Completecurriculum completecurriculum) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Completecurriculum completecurriculum) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Completecurriculum findID(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

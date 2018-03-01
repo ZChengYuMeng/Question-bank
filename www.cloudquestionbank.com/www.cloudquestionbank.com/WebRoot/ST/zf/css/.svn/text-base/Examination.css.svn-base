@@ -1,0 +1,45 @@
+/*灞忓箷鍦�200px*/
+		/*1000px浠ヤ笂灞忓箷鏄剧ず*/
+			@media screen and (min-width:1200px){
+				
+			}
+			/*灞忓箷瀹藉害鍦�640~1000px*/
+			@media screen  and (min-width:640px )and (max-width:1200px) {
+				
+			}
+			/*灞忓640px浠ヤ笅 */
+			@media  screen and (max-width:640px ) {
+				
+			}
+body{min-width: 350px;}
+*{margin: 0px;padding: 0px;}
+.TOP{border: 1px solid burlywood; min-height:200px ;background: white;}
+html{background-color: #F6F6F6;}
+.left{min-height: 400px;z-index: 2;max-width: 280px;}
+.rigth{background-color: paleturquoise;min-height: 900px;}
+.Navigation{position: fixed;right: 30px;top: 220px;z-index: 1;}
+.Navigation:hover{cursor: pointer;}
+.DateTitle{text-align: center;margin-top: 10px;}
+.DateTitle h2{font-size: 1.3em;}
+.DateTime{font-size: 4em;text-align: center;}
+.CountDown{text-align: center;margin-top: 5px;}
+.SitBack,.Submit{text-align: center;font-size: 2em;color: floralwhite;width: 100%;margin-top: 5px;float: left;}
+.option{margin-left:10%;}
+.stem{max-height: 600px;min-width: 300px;}
+.number_ioc{ width: 0; height: 0; border-top: 70px solid #1E9FFF; border-right: 70px solid transparent;float: left;text-align: center;}
+.number_number{float: left;margin-top: -65px;margin-left: 10px;font-size: 2em;color: white;}
+.TopicContent{float: right;margin-top: -70px;width: 90%;margin-right: 20px;height: 100%;}
+.option{margin-top: 10px;width: 80%;float: left;margin-left: 10%;}
+.option_tab{width: 90%;}
+.option_Click{float: left;margin-top: 10px;margin-left: 8%;	}
+.option_main{width: 88%;float: left;}
+.AnswerCard{height: 400px;margin-left: 10%;}
+.AnswerCard_hide{background-color: gainsboro;text-align: center;height: 10%;padding: 5px;font-size: 1.2em;}
+.AnswerCard_hide:hover{cursor: pointer;}
+.AnswerCard_main{height: 90%;background-color: gainsboro;}
+button{text-align: center;}
+.AnswerCard_main .layui-row{margin-top: 5px;}
+.AnswerCard_main_option{width: 15%;height: 25px;margin-left: 7px;border-radius: 5px;border: 1px solid cadetblue;background-color: white;}
+.AnswerCard_main_option:hover{cursor: pointer;border: 1px solid orange;color: #FF5722;}
+.layui-code:hover{cursor: pointer;}
+.option_main:hover{background-color: palegreen;}

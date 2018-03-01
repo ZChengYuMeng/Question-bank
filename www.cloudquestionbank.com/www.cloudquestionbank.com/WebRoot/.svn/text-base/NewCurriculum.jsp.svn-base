@@ -1,0 +1,117 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML >
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<meta charset="UTF-8">
+		<title>新增课程</title>
+		<link rel="stylesheet" href="ST/layui/css/layui.css" media="all" />
+		<script src="ST/layui/layui.js"></script>
+		<script src="ST/yanglu/js/jquery-1.4.2.min.js"></script>
+		<script src="ST/zf/js/Currency.js"></script>
+		<style>
+			.Notice{border: 1px solid orangered;}
+		</style>
+		<script>
+			$(function(){
+				//隐藏提示
+				$(".course_namePrompt").hide();
+				$(".attribute_IDPrompt").hide();
+				$(".stageIDPrompt").hide();
+				//表单提交事件				
+				$("#sub").click(function(){
+					var $bool=false;var $course_nameBool=false;var $attribute_IDBool=false;
+					var $stageIDBool=false;
+					$course_nameBool=VerificationsTextBox($("#course_name"),"给新课程取个名吧！");
+					$attribute_IDBool=VerificationsChoolIdOrclassId($("#attribute_ID"),"您还未选择课程的所属分类呢！");
+					$stageIDBool=VerificationsChoolIdOrclassId($("#stageID"),"请选择课程所属阶段！");
+					if($course_nameBool==true&&$attribute_IDBool==true&&$stageIDBool==true){
+						$bool=true;
+					}
+					if($bool){
+						alert("YYYYs");
+					}
+					
+					
+					
+					
+				})
+				 
+				  
+			})
+		</script>
+	</head>
+	<body class="layui-container">
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+		  <legend>新增课程</legend>
+		</fieldset>
+		<!--表单填写部分-->
+		<form class="layui-form" id="Addcourse" action="" >
+			<div class="layui-form-item">
+		    <label class="layui-form-label">所属阶段:</label>
+		    <div class="layui-input-inline">
+		      <select id="attribute_ID" name="attribute_ID" lay-verify="required" lay-filter="aihao">
+		      	<option value="" selected=""></option>
+		        <option value="1" >Accp7.0S1</option>
+		        <option value="2" >Accp7.0S2</option>
+		      </select>
+		    </div>
+		    <div class="layui-form-mid layui-word-aux attribute_IDPrompt">您的学校编号好像有点问题哦~</div>
+		    <label class="layui-form-label">所属课程</label>
+		    <div class="layui-input-inline">
+		      <select id="stageID" name="stageID" lay-verify="required" lay-filter="aihao">
+		      	<option value="0" selected="">一级分类</option>
+		        <option value="2" >msql</option>
+		        <option value="3" >Java</option>
+		        <option value="4" >C#</option>
+		      </select>
+	   	 	</div>
+	   	 	  <div class="layui-form-mid layui-word-aux stageIDPrompt">您的学校编号好像有点问题哦~</div>
+	    </div>
+	    <div class="layui-form-item">
+	    	<label class="layui-form-label">课程名:</label>
+		    <div class="layui-input-inline">
+		      <input type="text" id="course_name" name="course_name" lay-verify="title" autocomplete="off" placeholder="课程名称" class="layui-input">
+		    </div>
+		    <div class="layui-form-mid layui-word-aux course_namePrompt">课程名不能为空哦~！</div>
+	    </div>
+		
+		 <div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <button type="button" class="layui-btn" id="sub">立即提交</button>
+			      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			    </div>
+			  </div> 
+		
+		
+		</form>	
+		
+		<script>
+			layui.use(['form', 'layedit', 'laydate','util', 'layer'], function(){
+			  var form = layui.form
+			  ,layer = layui.layer
+			  ,layedit = layui.layedit
+			  ,laydate = layui.laydate;
+			   var util = layui.util
+			  ,laydate = layui.laydate
+			  ,layer = layui.layer;
+			  //创建一个编辑器
+			  var editIndex = layedit.build('LAY_demo_editor');
+			 	  
+			});
+
+    </script>	
+	</body>
+</html>

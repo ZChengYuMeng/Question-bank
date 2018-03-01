@@ -1,0 +1,459 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<c:if test="${adminid!=null && adminTypeID<5}">
+<!DOCTYPE HTML >
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>用户管理</title>
+    
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+		
+		<link rel="stylesheet" href="${pageContext.request.contextPath }/ST/layui/css/layui.css" media="all" />
+		<script src="${pageContext.request.contextPath }/ST/layui/layui.js"></script>
+		<link rel="stylesheet" href="${pageContext.request.contextPath }/ST/zf/css/UserManagement.css" />
+		<script src="${pageContext.request.contextPath }/ST/yanglu/js/jquery-1.4.2.min.js"></script>
+		<meta charset="UTF-8">
+		<title>用户管理</title>
+		<script src="ST/zf/js/Currency.js"></script>
+		<style>
+			.Upd{max-width: 960px;margin: auto;}
+			.Notice{border: 1px solid orangered;}
+		</style>
+		<script>
+			$(function(){
+				$.ajaxSetup({async:false});
+				var $schoolID=<%=session.getAttribute("schoolID")%>;//存储校区编号
+				
+				//隐藏 提示
+				$(".schoolIDPrompt").hide();
+				$(".classIDPrompt").hide();
+				$(".Upd").hide();
+				//表单提交事件				
+				$("#sub").click(function(){
+					var $bool=false;
+					var $addressBool=false;
+					var $schoolIDBool=false;
+					var $classIDBool=false;
+					$addressBool=VerificationIllegalAndPrompt($("#address"),"用户的地址不能为空哦~!","地址中是包含非法字符的哦~");     //验证住址
+					$schoolIDBool=VerificationsChoolIdOrclassId($("#schoolID"),"您还未选择学校编号呢！");           //验证学校编号
+					$classIDBool=VerificationsChoolIdOrclassId($("#classID"),"哎呀你是不是忘了选择班级编号啊~！");  //验证班级编号
+					if( $addressBool==true && $schoolIDBool==true && $classIDBool==true ){
+					  		if(VerificationValIsArray($("#SchoolIDArr").val().trim(),$("#schoolID").val().trim())){//检测校区
+					  		   if(VerificationValIsArray($("#ClassIDArr").val().trim(),$("#classID").val().trim())){//检测班级编号	
+					  		   		if(<%=session.getAttribute("schoolID")%>==0 && <%=session.getAttribute("adminTypeID")%>==1){
+					  		   				$bool=true;
+					  		   		}else{//非超级管理员时
+					  		   			if(<%=session.getAttribute("schoolID")%>==$("#schoolID").val().trim()){
+					  		   				$bool=true;
+					  		   			}else{FriendlyPrompt("您还不能跨校区操作哦！");}
+					  		   		}	
+					  		   }else{FriendlyPrompt("用户只能在本校区的班级哦！");}
+					  		}else{FriendlyPrompt("校区编号好像有点问题哦~！");}
+					 }
+					//验证通过,获取数据
+					if($bool){
+						var $data="";
+						 	$data+="&guest.guestId="+$("#id").val().trim();
+						    $data+="&guest.address="+$("#address").val().trim();
+						    $data+="&guest.schoolId="+$("#schoolID").val().trim();
+						    $data+="&guest.classId="+$("#classID").val().trim();
+						    $data+="&admin.schoolId="+<%=session.getAttribute("schoolID")%>;
+						    console.log($data);
+						    if(UpdOperation($data)){$(".Upd").hide();}
+						    
+					}
+				})
+				
+				//-----[修改用户基本信息]
+				function UpdOperation($data){
+					var  $bool=false
+					$.post("<%=request.getContextPath()%>/Guest_OperationGuest",$data,success,"json");
+					function success(result){
+						$bool=result;
+						var $ts=result?"操作成功！刷新即可查看~":"操作失败……";
+						FriendlyPrompt($ts);
+					}
+					return $bool;
+				}
+				
+				
+				
+				
+				load("school.id="+$schoolID);
+				//------[加载校区班级]
+				function load($data){
+					$.post("<%=request.getContextPath()%>/School_GetList",$data,success,"json");
+					function success(result){
+						var $html="";var $SchoolIDArr="";var $ClassIDArr=""; 
+						$.each(result.School,function(i,o){
+							$html+="<option value="+o[0]+" >"+o[1]+"</option>";
+							$SchoolIDArr+=i==0?o[0]:","+o[0];							
+						})
+						$("#schoolID").html($html);$html="";//清空数据
+						$.each(result.Class,function(i,o){
+							$ClassIDArr+=i==0?o[0]:","+o[0];	
+							$html+="<option value="+o[0]+" >"+o[1]+"</option>";
+						})
+						$("#SchoolIDArr").val($SchoolIDArr);//存储校区编号
+						$("#ClassIDArr").val($ClassIDArr);  //存储班级编号
+						$("#classID").html($html);
+					}
+				}
+				//------[加载校区班级]
+				//------[加载班级]
+				function changeload($data){
+					$.post("<%=request.getContextPath()%>/School_GetList",$data,success,"json");
+					function success(result){
+						var $html="";var $ClassIDArr=""; 
+						$.each(result.Class,function(i,o){
+							$ClassIDArr+=i==0?o[0]:","+o[0];
+							$html+="<option value="+o[0]+" >"+o[1]+"</option>";
+						})
+						$("#ClassIDArr").val($ClassIDArr);  //存储班级编号
+						$("#classID").html($html);
+					}
+				}
+				//------[END][加载班级]
+				//校区切换时触发
+				$("#schoolID").live("change",function(){
+					if(<%=session.getAttribute("schoolID")%>==0){
+						changeload("school.id="+$(this).val());
+					}else{
+						 if(<%=session.getAttribute("schoolID")%>==$(this).val()){
+							changeload("school.id="+$(this).val());
+						}else{FriendlyPrompt("您的权限还不够哦！加油！");} 
+					}
+				})
+			    //[END]校区切换时触发
+				
+				$(".upd").live("click",function(){
+					//if(<%=session.getAttribute("schoolID")%>==0){
+						//FriendlyPrompt("您不能修改哦！");
+					//}else{
+						var $data="";
+						//alert($(this).parent().parent().parent().html());
+						$(this).parent().parent().parent().parent().children("td[name]").each(function(i,o){
+							$data+='"'+$(this).attr("name")+'":'+$(this).html()+',';
+							//写入数据
+							if($(this).attr("name")=="address"){
+								TextBoxWrite($("#address"),$(this).html());
+							}
+							if($(this).attr("name")=="cardNo"){
+								TextBoxWrite($("#cardNo"),$(this).html());
+							}
+							if($(this).attr("name")=="GuestId"){
+								TextBoxWrite($("#id"),$(this).html());
+							}
+							//选中数据
+							if($(this).children("[name=sname]").attr("name")=="sname"){
+								changeload("school.id="+$(this).children("[name=sname]").val());//切换校区时查询当前校区的班级信息
+								SelectedDrop_DownBox($("#schoolID"),$(this).children("[name=sname]").val());
+							}
+							if($(this).children("[name=name]").attr("name")=="name"){
+								console.log("name_"+$(this).children("[name=name]").val());
+								SelectedDrop_DownBox($("#classID"),$(this).children("[name=name]").val());
+							}
+						})
+						$data=$data.substring(0,$data.length-1);
+						$data="[ {"+$data+"} ]";
+						//console.log($data);
+						//alert($data);
+						 $(".Upd").show();
+					// }	 
+				})
+				var data;
+				data =PageLoad("&guest.schoolId="+<%=session.getAttribute("schoolID")%>);
+				//console.log(data);
+				//-----[页面加载]
+				function PageLoad($data){
+					var $dataS="";		
+					$.post("<%=request.getContextPath()%>/Guest_GetGuestList",$data,success,"json");
+					function success(result){
+						$dataS=result;
+					}
+					return $dataS;
+				}
+				 var Str="";
+				//-----[END][页面加载]
+				//-----layui区
+				layui.use(['util', 'laydate', 'layer','carousel','code','element','flow','form','jquery','laydate','layedit','laypage','laytpl','mobile','table','tree','upload'], function(){
+					   var form = layui.form
+							  ,layer = layui.layer
+							  ,layedit = layui.layedit
+							  ,laydate = layui.laydate;
+							   var util = layui.util
+							  ,laydate = layui.laydate
+							  ,layer = layui.layer;
+					  var laypage = layui.laypage
+					  ,layer = layui.layer;
+					  var $ = layui.jquery,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+					 //console.log("data"+data);
+					
+					  
+					  
+					   //阶段切换事件
+					   form.on('select(schoolID)', function(data){
+					   		if(<%=session.getAttribute("schoolID")%>==0){
+								changeload("&school.id="+data.value);
+							}else{
+								 if(<%=session.getAttribute("schoolID")%>==data.value){
+									changeload("&school.id="+data.value);
+								 }else{FriendlyPrompt("您的权限还不够哦！加油！");} 
+							}
+					   		
+					   })
+					  //------[加载班级]
+					  function changeload($data){
+					  		$.ajaxSetup({async:false});
+							$.post("<%=request.getContextPath()%>/School_GetList",$data,success,"json");
+							function success(result){
+								var $html="";var $ClassIDArr=""; 
+								$.each(result.Class,function(i,o){
+									$ClassIDArr+=i==0?o[0]:","+o[0];
+									$html+="<option value="+o[0]+" >"+o[1]+"</option>";
+								})
+								$("#ClassIDArr").val($ClassIDArr);  //存储班级编号
+								$("#classID").html($html);
+								layui.form.render('select');
+							}
+					  }
+					  //------[END][加载班级] 
+					  
+					 // console.log(data);
+					  
+					  var table_heaeHtml="<thead>\
+					      <tr>\
+					      <th >编号</th>\
+					      <th >自我描述</th>\
+					      <th >手机号</th>\
+					      <th >用户名</th>\
+					      <th >最后一次登录时间</th>\
+					      <th >用户状态</th>\
+					      <th >用户VIP类型编号</th>\
+					      <th >邮箱</th>\
+					      <th >登录密码</th>\
+					      <th >创建时间</th>\
+					      <th >修改时间</th>\
+					      <th >详细地址</th>\
+					      <th >真实姓名</th>\
+					      <th >身份证号</th>\
+					      <th >学校</th>\
+					      <th >班级</th>\
+					      <th class='operation'>操作</th>\
+					    </tr>\
+					  </thead>";
+					  var $html="";
+					   layui.each(data, function(i, o){
+					  		$html=i==0?'<option value="'+o.GuestId+'" selected="true">'+o.realName+'</option>':'<option value="'+o.GuestId+'">'+o.realName+'</option>';
+					  	//console.log($html);
+					  	$('#SearchBox').append($html);
+					  }) 
+					 layui.form.render('select');
+					
+					 //加载数据调用分页
+					  laypage.render({
+					    elem: 'pagutui'
+					    ,count: data.length
+					    ,layout: ['count', 'prev', 'page', 'next', 'limit', 'skip']
+					    ,jump: function(obj){
+					      //模拟渲染
+					      document.getElementById('Guest').innerHTML = function(){
+					        var arr = []
+					        ,thisData = data.concat().splice(obj.curr*obj.limit - obj.limit, obj.limit);
+					        arr.push(table_heaeHtml);
+					        // arr.push("<tabody>");
+					        layui.each(thisData, function(index, item){
+					        //if(index==0){arr.push('<tabody>');}
+					          arr.push('<tr>\
+							     <td name="GuestId">'+item.GuestId+'</td>\
+							      <td name="description">'+item.description+'</td>\
+							      <td name="phone">'+item.phone+'</td>\
+							      <td name="guestName">'+item.guestName+'</td>\
+							      <td name="lastLoginTime">'+item.lastLoginTime+'</td>\
+							      <td name="statusID">'+item.statusID+'</td>\
+							      <td name="guestVIPTypeID">'+item.guestVIPTypeID+'</td>\
+							      <td name="email">'+item.email+'</td>\
+							      <td name="pwd">'+item.pwd+'</td>\
+							      <td name="createTime">'+item.createTime+'</td>\
+							      <td name="updateTime">'+item.updateTime+'</td>\
+							      <td name="address">'+item.address+'</td>\
+							      <td name="realName">'+item.realName+'</td>\
+							      <td name="cardNo">'+item.cardNo.replace(/^(\w{6})\w{10}(.*)$/, '$1**********$2')+'</td>\
+							      <td name="schoolID">'+item.schoolName+'<input type="hidden" name="sname" value="'+item.schoolID+'"/></td>\
+							      <td name="classID">'+item.ClassName+'<input type="hidden" name="name" value="'+item.classID+'"/></td>\
+							        <td> <div class="row">\
+								      		<div class="layui-col-lg6">\
+								      			<button class="layui-btn  layui-btn-normal upd" title="修改"><i class="layui-icon">&#xe642;</i></button>\
+								      		</div>\
+								      		<div class="layui-col-lg6">\
+								      			<button class="layui-btn  layui-bg-red" title="删除"><i class="layui-icon">&#x1007;</i></button>\
+								      		</div>\
+							      		</div>\
+							  		</td>\
+							    </tr>');
+							    
+					        });
+					        return arr.join();
+					      }();
+					    }
+					  });		
+							
+							
+					});
+				//-----[END]layui区
+				
+				// $("#SearchBox:").html(Str);
+				
+				
+				var $tablehtml=$("#Guest").html();
+				//----[清除表格区域多余的',']
+				var endnuber=data.length;
+				setTimeout(function showTime(){
+					var $html=$("#Guest").html();
+					endnuber=$html.length-endnuber;
+					//console.log(endnuber);
+					$html=$html.substring(0,endnuber);
+					//console.log($html);
+					$tablehtml=$html;
+					$("#Guest").html($html);
+				}, 1000);
+				//----[END][清除多余的',']
+				//监听数据显示条数改变时
+				/* setInterval(function(){
+					var $html=$("#Guest").html();
+					if($html!=$tablehtml){
+						var $lxid="";
+						$("#pagutui").children("#layui-laypage-1").children(".layui-laypage-limits").children("select").children("option").each(function(i){
+					     	//console.log($(this).attr("selected"));
+					       if($(this).attr("selected")==true){
+					        $lxid = $(this).val();
+					       }
+					     });
+						//console.log($lxid);
+						endnuber=$html.length-$lxid;
+						//console.log(endnuber);
+						$html=$html.substring(0,endnuber);
+						$tablehtml=$html;
+						$("#Guest").html($html);
+					}
+				},1000) */
+				
+				
+				
+			})
+			
+			
+		</script>
+		
+		
+		
+	</head>
+	<body >
+		
+		<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+			  <legend>用户管理</legend>
+		</fieldset>
+		<!--搜索框-->
+			<div class="layui-row search">
+			<div class="search_text">
+				<div class="layui-form component">
+			      <select  id="SearchBox" lay-search="" lay-filter="component"  >
+			      
+			      </select>
+			    </div>
+				
+			</div>
+			<div class="search_btn">
+				<button class="layui-btn  layui-bg-red" title="搜索"><i class="layui-icon">&#xe615;</i></button>
+			</div>
+		</div>
+	 
+		<!--[END]搜索框-->
+		<!--表格数据展示-->
+	   <table id="Guest" style="width:90%;" class="layui-table"></table>
+		<!--[END]表格数据展示-->
+		<!--分页-->
+	   <div class="page"> 
+	 	<div id="pagutui" lay-filter="pagutui"></div>
+       </div>   	
+		<!--[END]分页-->
+		
+		<!--修改-->
+		<div class="Upd">
+			<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+			  <legend>修改用户信息</legend>
+		 </fieldset>
+			
+			
+			<form class="layui-form" id="AddGuest" action="" >
+			<div class="layui-form-item">
+			    <div class="layui-input-inline">
+			    	<input type="hidden" name="id" id="id" />
+		    	</div>
+			</div>
+			 <div class="layui-form-item">
+			  		<label class="layui-form-label">证件号:</label>
+				     <div class="layui-input-inline">
+				     	<input type="text" class="layui-input" readonly="readonly" id="cardNo" />
+				    </div>
+			  </div>
+			  
+			  <div class="layui-form-item">
+			    <label class="layui-form-label">现住地址:</label>
+			    	<div class="layui-input-block" >
+				      <textarea id="address" name="address" maxlength="250" lay-verify="required" placeholder="湖南省长沙市……" class="layui-textarea"></textarea>
+				    </div>
+			  </div>
+			  
+			   <div class="layui-form-item">
+			     	<label class="layui-form-label">学校:</label>
+				    <div class="layui-input-inline">
+				      <select class="schoolID" id="schoolID" name="schoolID" lay-verify="required" lay-filter="schoolID"  >
+				        
+				      </select>
+				    </div>
+				   <div class="layui-form-mid layui-word-aux schoolIDPrompt">您的学校编号好像有点问题哦~</div>
+	    		    <label class="layui-form-label">班级:</label>
+					<div class="layui-input-inline">
+					      <select class="classID" id="classID" name="classID" lay-verify="required" lay-filter="aihao">
+					      </select>
+				    </div>
+				    <div class="layui-form-mid layui-word-aux classIDPrompt">您的班级编号好像有点问题哦~</div>
+			  </div>
+			  <div class="layui-form-item">
+			    <div class="layui-input-block">
+			      <button type="button" style="width: 100px;" class="layui-btn" id="sub">立即提交</button>
+			      <button type="reset" style="width: 100px;" class="layui-btn layui-btn-primary">重置</button>
+			    </div>
+			  </div>
+			</form>
+			
+			
+			
+		</div>
+		
+		
+		<!--[END]修改-->
+		
+	<input type="hidden" id="SchoolIDArr"/> 
+	<input type="hidden" id="ClassIDArr"/></body>
+</html>
+</c:if>
+<c:if test="${adminid==null }">
+	<script>location.href="<%=request.getContextPath()%>/AdminLogin.jsp";</script>
+</c:if>
+<c:if test="${adminTypeID>4 }">
+	<div style="margin-top:20%;margin-left:35%;">
+		<font color="red" style="font-size:50px;">您没有权限访问改功能页面</font>
+	</div>
+</c:if>

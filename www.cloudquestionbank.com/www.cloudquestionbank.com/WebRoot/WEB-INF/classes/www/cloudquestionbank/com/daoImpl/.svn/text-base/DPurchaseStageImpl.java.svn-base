@@ -1,0 +1,14 @@
+package www.cloudquestionbank.com.daoImpl;
+
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import www.cloudquestionbank.com.dao.DIPurchaseStage;
+
+/**
+ * DAOImpl【用户购买阶段表】
+ * @author ( 人 )
+ *
+ */
+public class DPurchaseStageImpl extends HibernateDaoSupport implements DIPurchaseStage {
+
+}

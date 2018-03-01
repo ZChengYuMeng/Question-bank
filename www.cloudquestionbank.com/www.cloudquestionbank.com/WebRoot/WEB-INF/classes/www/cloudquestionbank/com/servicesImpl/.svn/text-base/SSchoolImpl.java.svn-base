@@ -1,0 +1,75 @@
+package www.cloudquestionbank.com.servicesImpl;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import www.cloudquestionbank.com.dao.DISchool;
+import www.cloudquestionbank.com.entity.School;
+import www.cloudquestionbank.com.services.SIClass;
+import www.cloudquestionbank.com.services.SISchool;
+
+/**
+ * ServicesImpl【学校表】
+ * @author ( 人 )
+ *
+ */
+public class SSchoolImpl implements SISchool {
+	DISchool dis;
+	public void setDis(DISchool dis) {
+		this.dis = dis;
+	}
+	SIClass sic;
+	public void setSic(SIClass sic) {
+		this.sic = sic;
+	}
+	List list;
+	@Override
+	public HashMap<String, Object> GetList(School school) {
+		HashMap<String, Object> hmp=new HashMap<String, Object>();//传递数据
+		String id="";//接收校区编号
+		String sql="select id,name from School  where 1=1 ";
+		sql+=school.getId()!=0?" and id="+school.getId():"";
+		sql+=" ORDER BY id ";
+		//System.out.println(sql);
+		list=dis.GetList(sql);
+		hmp.put("School", list);
+		int i=0;
+		for (Object ob : list) {
+			Object []o=(Object[])ob;
+			id=o[0].toString();
+			list=i==0?sic.GetList(id):list;
+			i++;
+		}
+		hmp.put("Class", list);
+		return hmp;
+	}
+	@Override
+	public List GetSchool(School school) {
+		String sql="select id,name,address,icon from School where id="+school.getId();
+		//System.out.println("查询学校信息"+sql);
+		return dis.GetList(sql);
+	}
+	@Override
+	public boolean AddSchool(School school) {
+		String sql="insert into School(name,address,state,PostalCode,Icon)"+
+				    " VALUES('"+school.getName()+"','"+school.getAddress()+"',0,"+school.getPostalCode()+",'"+school.getIcon()+"')";
+		//System.out.println(sql);
+		return dis.OptionSchool(sql);
+	}
+	@Override
+	public HashMap<String, Object> GetSchoolList(School school) {
+		HashMap<String, Object> hmp=new HashMap<String, Object>();//传递数据
+		String id="";//接收校区编号
+		String sql="select id,name from School  where 1=1 ";
+		sql+=school.getId()!=0?" and id="+school.getId():"";
+		sql+=" ORDER BY id ";
+		System.out.println(sql);
+		list=dis.GetList(sql);
+		hmp.put("School", list);
+		return hmp;
+	}
+	
+	
+	
+}

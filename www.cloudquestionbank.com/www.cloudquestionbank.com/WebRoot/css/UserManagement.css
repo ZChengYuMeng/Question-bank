@@ -1,0 +1,13 @@
+/*用户管理界面外部样式*/
+.layui-table{width: 95%;margin: auto;margin-top: 30px;}
+.layui-btn{width: 30px;padding: 0px;}
+*{padding: 0px ;margin: 0px;}
+.operation{width: 70px;}
+.page{margin-left:30% ;min-width:300px;margin-top: 20px;}
+.search{margin-top: 50px;}
+.search_text{float: left;margin-left: 30%;width: 300px;}
+.search_btn{float: left;margin-left: 20px;width: 70px;}
+.search_btn button{width: 100%;}
+@media  screen and (max-width:640px ) {
+			.page{margin-left:18%;}
+			}
